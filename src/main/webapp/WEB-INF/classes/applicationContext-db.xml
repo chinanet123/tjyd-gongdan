@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd"
+	default-autowire="byName" default-lazy-init="true">
+	<description>mysql数据源</description>
+
+	<bean id="dataSource" 
+          class="com.mchange.v2.c3p0.ComboPooledDataSource" 
+          destroy-method="close">
+        
+        <property name="driverClass"><value>${db.driver}</value></property>
+        <property name="jdbcUrl"><value>${db.url}</value></property>
+        <property name="user"><value>${db.username}</value></property>
+        <property name="password"><value>${db.password}</value></property>
+        
+        <property name="initialPoolSize"><value>3</value></property>
+        <property name="minPoolSize"><value>3</value></property>
+        <property name="maxPoolSize"><value>50</value></property>
+        <!-- <property name="timeout"><value>0</value></property> -->   <!-- 0 means: no timeout -->
+        <property name="idleConnectionTestPeriod"><value>200</value></property>
+        <property name="acquireIncrement"><value>1</value></property>
+        <property name="maxStatements"><value>0</value></property>  <!-- 0 means: statement caching is turned off.  -->
+        <property name="numHelperThreads"><value>3</value></property>  <!-- 3 is default --> 
+        
+    </bean>
+	
+	<!-- 
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+	</bean>
+     -->
+</beans>

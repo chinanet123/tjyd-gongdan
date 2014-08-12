@@ -1,0 +1,13 @@
+#rootPanel { 
+ 	background: none repeat scroll 0 0 #F2F3F7;
+    border: 1px solid #E1E0DE;
+    bottom: 47px;
+    left: 0;
+    margin-left: 0;
+    margin-right: 0;
+    /* margin-top: 8px; */
+    /* padding: 6px; */
+    position: fixed;
+    /* top: 50px; */
+    width: 100%; 
+}
