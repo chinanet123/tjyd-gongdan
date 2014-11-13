@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ticket>
+	<receiveTime>2014-09-02 10:30:00</receiveTime>
+	<ticketId>TIC0001</ticketId>
+	<ticketType>开通工单</ticketType>
+	<ticketState>资源分配</ticketState>
+	<customerId>CID0001</customerId>
+	<customerName>北京中联润通信息技术有限公司</customerName>
+	<customerAddress>北京市海淀区苏州街20号银丰大厦802室</customerAddress>
+	<postalCode>100080</postalCode>
+	<category>计算机软件</category>
+
+	<businessContact>
+		<name>赵四</name>
+		<phone>13983417463</phone>
+		<email>zhaosi@domain.com</email>
+	</businessContact>
+
+	<technicalContact>
+		<name>刘能</name>
+		<phone>13800126542</phone>
+		<email>liuneng@domain.com</email>
+	</technicalContact>
+
+	<customerManager>
+		<name>赵九</name>
+		<phone>13800238873</phone>
+		<email>zhaojiu@domain.com</email>
+	</customerManager>
+
+	<orderInfo>
+		<contractId>ORI0001</contractId>
+		<contractSignedDate>2014-09-01</contractSignedDate>
+		<contractExpiredDate>2019-09-01</contractExpiredDate>
+		<availableAt>2014-09-04</availableAt>
+		<productType>共享云</productType>
+		<forWebsite>no</forWebsite>
+		<portsNeedToOpen>22,21</portsNeedToOpen>
+		<suites>
+			<suite>
+				<name>套餐1</name>
+				<price>0.5</price>
+				<count>2</count>
+				<discount>0.5</discount>
+				<desc>套餐1</desc>
+			</suite>
+			<suite>
+				<name>套餐2</name>
+				<price>0.5</price>
+				<count>2</count>
+				<discount>0.5</discount>
+				<desc>套餐2</desc>
+			</suite>
+		</suites>
+
+		<bandwidth>1</bandwidth>
+		<ipCount>2</ipCount>
+		<storage>
+			<sizeInGB>500</sizeInGB>
+			<discount></discount>
+		</storage>
+		<snapshot>200</snapshot>
+		<ha>2</ha>
+		<memo></memo>
+		<filingNo></filingNo>
+		<filingIp></filingIp>
+		<filingDomain></filingDomain>
+	</orderInfo>
+</ticket>
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<ticket>
+	<receiveTime>2014-09-02 10:30:00</receiveTime>
+	<ticketId>TIC0002</ticketId>
+	<ticketType>开通工单</ticketType>
+	<ticketState>资源分配</ticketState>
+	<customerId>CID0002</customerId>
+	<customerName>北京中联润通信息技术有限公司</customerName>
+	<customerAddress>北京市海淀区上地信息路20号广丰大厦802室</customerAddress>
+	<postalCode>100080</postalCode>
+	<category>计算机辅助设计</category>
+
+	<businessContact>
+		<name>赵专四</name>
+		<phone>13983417463</phone>
+		<email>zhaosi@domain.com</email>
+	</businessContact>
+
+	<technicalContact>
+		<name>刘专能</name>
+		<phone>13800126542</phone>
+		<email>liuneng@domain.com</email>
+	</technicalContact>
+
+	<customerManager>
+		<name>赵专九</name>
+		<phone>13800238873</phone>
+		<email>zhaojiu@domain.com</email>
+	</customerManager>
+
+	<orderInfo>
+		<contractId>ORI0002</contractId>
+		<contractSignedDate>2014-09-01</contractSignedDate>
+		<contractExpiredDate>2019-09-01</contractExpiredDate>
+		<availableAt>2014-09-04</availableAt>
+		<productType>专享云</productType>
+		<forWebsite>no</forWebsite>
+		<portsNeedToOpen>22,21</portsNeedToOpen>
+		<suites>
+			<suite>
+				<name>套餐1</name>
+				<price>6365</price>
+				<count>2</count>
+				<discount>1</discount>
+				<desc>套餐1</desc>
+			</suite>
+			<suite>
+				<name>ECU定制包</name>
+				<price></price>
+				<count>2</count>
+				<discount>1</discount>
+				<desc>ECU定制包</desc>
+			</suite>
+			<suite>
+				<name>增值服务套餐1</name>
+				<price></price>
+				<count>2</count>
+				<discount>1</discount>
+				<desc>防火墙、ssl、svn</desc>
+			</suite>
+		</suites>
+
+		<bandwidth>1</bandwidth>
+		<ipCount>2</ipCount>
+		<storage>
+			<sizeInGB>500</sizeInGB>
+			<discount>1</discount>
+		</storage>
+		<snapshot>200</snapshot>
+		<ha>2</ha>
+		<memo></memo>
+		<filingNo></filingNo>
+		<filingIp></filingIp>
+		<filingDomain></filingDomain>
+	</orderInfo>
+</ticket>

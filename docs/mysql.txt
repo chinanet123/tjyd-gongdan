@@ -1,0 +1,18 @@
+#mysql数据库中添加用户gongdan,密码：china-ops
+insert into mysql.user(Host,User,Password) values("localhost","gongdan",password("china-ops"));
+
+#给用户gongdan赋权（远程操作的所有权限%,本地操作权限localhost）
+grant all on *.* to gongdan@"%" Identified by "china-ops";
+grant all on *.* to gongdan@"localhost" Identified by "china-ops";
+
+#刷新权限
+flush privileges; 
+
+#创建yd_gongdan库
+create database yd_gongdan; 
+
+#将库yd_gongdan的所有操作权限赋给本地用户gongdan
+grant all privileges on yd_gongdan.* to gongdan@localhost identified by 'china-ops';
+
+#刷新权限
+flush privileges; 
