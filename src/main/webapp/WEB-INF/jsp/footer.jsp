@@ -1,6 +1,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" pageEncoding="UTF-8"%>
-<script src="<c:url value='/js/jquery.jqGrid.src.js'/>"></script>
+<script src="<c:url value='/js/jquery-1.8.3.min.js'/>"></script>
 <style type="text/css">
 #main-footer {
     bottom: 0;
@@ -43,7 +43,7 @@
 }
 
 </style>
-<div id="main-footer" style="width:98%">
+<%-- <div id="main-footer" style="width:98%">
 	<center class="tiny">
 		<div class="copy_right" style="display:none">
 			<div class="bottom-logo">
@@ -55,4 +55,7 @@
 			</div>
 		</div>
 	</center>
-	</div>
+</div> --%>
+<div class="footer">
+	版权信息
+</div>

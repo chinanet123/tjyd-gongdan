@@ -9,12 +9,12 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>
             classpath*:spring-*.xml
-            classpath:applicationContext-security.xml
+           classpath:applicationContext-security.xml 
         </param-value>
     </context-param>
 	
 	<!-- Creates the Spring Container shared by all Servlets and Filters -->
-	<listener>
+ 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 	
@@ -38,7 +38,7 @@
       <filter-name>springSecurityFilterChain</filter-name>
       <url-pattern>/*</url-pattern>
     </filter-mapping>
-	
+
 	<servlet>
 		<servlet-name>dispatcherServlet</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -71,6 +71,50 @@
 	</servlet-mapping>
 	<!-- 验证码 end -->
 	
+	<!-- 中联工单系统接收 ESOP 业务开通、变更工单的接口 start -->
+    <servlet>
+        <servlet-name>ReceiveAuTicketServer</servlet-name>
+        <servlet-class>com.chinaops.web.ydgd.servlet.ReceiveAuTicketServer</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReceiveAuTicketServer</servlet-name>
+        <url-pattern>/receiveAuTicket.do</url-pattern>
+    </servlet-mapping>
+    <!-- 中联工单系统接收 ESOP 业务开通、变更工单的接口 end -->
+    
+    <!-- 中联工单系统接收 ESOP 业务撤销工单的接口 start -->
+    <servlet>
+        <servlet-name>ReceiveTbTicketServer</servlet-name>
+        <servlet-class>com.chinaops.web.ydgd.servlet.ReceiveTbTicketServer</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReceiveTbTicketServer</servlet-name>
+        <url-pattern>/receiveTbTicket.do</url-pattern>
+    </servlet-mapping>
+    <!-- 中联工单系统接收 ESOP 业务撤销工单的接口 end -->
+    
+    <!-- 模拟移动系统接收 ESOP工单的接口 start -->
+    <servlet>
+        <servlet-name>responseServlet</servlet-name>
+        <servlet-class>com.chinaops.web.ydgd.servlet.ResponseServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>responseServlet</servlet-name>
+        <url-pattern>/responseServlet.do</url-pattern>
+    </servlet-mapping>
+    <!-- 模拟移动系统接收 ESOP工单的接口 end -->
+    
+    <!-- 导出数据到Excel中 start -->
+    <servlet>
+        <servlet-name>ExportExcelServlet</servlet-name>
+        <servlet-class>com.chinaops.web.ydgd.servlet.ExportExcelServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ExportExcelServlet</servlet-name>
+        <url-pattern>/export.do</url-pattern>
+    </servlet-mapping>
+    <!-- 导出数据到Excel中 end -->
+    
     <welcome-file-list>
        <welcome-file>index.jsp</welcome-file>
        <welcome-file>/index.htm</welcome-file>

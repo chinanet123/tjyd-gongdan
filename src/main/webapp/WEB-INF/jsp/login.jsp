@@ -54,7 +54,7 @@
 			<div class="top">
 
 				<div class="top_logo2">
-					<img src="images/header-logo.png" border="0">
+					<img src="images/logo_bac.png" border="0">
 				</div>
 				<div class="top_wo_logo"></div>
 
@@ -64,8 +64,7 @@
 			<div class="main">
 				<div class="main_left">
 					<div class="left_pic">
-						<img src="images/serve-text.png" width="229" height="272"
-							border="0">
+						<img src="images/serve-text.png" width="280" border="0">
 					</div>
 				</div>
 
@@ -80,7 +79,7 @@
 						<div class="right_user">
 
 							<span>用户名</span> <span> <input name="j_username"
-								id="j_username" style="height: 22px;" type="text"
+								id="j_username" style="height: 22px;padding:2px;line-height:22px;" type="text"
 								class="input_Login px vm xg1" node-type="text"
 								placeholder="请输入用户名"
 								/* onblur="if(this.value == ''){this.value = '请输入用户名';this.className = 'input_Login px vm xg1';};"
@@ -90,12 +89,12 @@
 						</div>
 						<!-- onblur="validateUserName();" -->
 						<div class="right_name" style="position: relative;">
-							<span>密 码</span> <input name='j_password' id='j_password'
+							<span>密　码</span> <input name='j_password' id='j_password'
 								autocomplete="off" node-type="password" placeholder="请输入密码"
-								style='height: 22px;' type='password' class='input_Login'>
+								style='height: 22px;padding:2px;line-height:22px;' type='password' class='input_Login'>
 							<!--[if IE]>   
-<span id="prompt" style="position: absolute; top:5px; left:61px;font-size:80%;" class='px vm xg1'>请输入密码</span>
-<![endif]-->
+								<span id="prompt" style="position: absolute; top:5px; left:61px;left:46px \9;font-size:80%;font-size:12px \9;" class='px vm xg1'>请输入密码</span>
+							<![endif]-->
 							<script type="text/javascript">
 								$("#prompt").click(function() {
 									$(this).hide();
@@ -117,7 +116,7 @@
 								class="input_Login" maxlength="4" /></span> <img id="imgObj"
 								title="点击更换数字" src="<c:url value='/captcha'/>"
 								onclick="changeImg()"
-								style="cursor: pointer; height: 27px; width: 75px; position: absolute; padding-left: 5px;" />
+								style="cursor: pointer; height: 26px; width: 75px; position: absolute; padding-left: 5px;" />
 							<a href="javascript:changeImg();"
 								style="margin-left: 90px; font-size: 14px;">看不清楚？</a>
 						</div>
@@ -133,13 +132,14 @@
 				<!-- end of login form -->
 			</div>
 			<!--footer -->
-			<div class="footer">
+			<jsp:include page="footer.jsp"/>
+			<%-- <div class="footer">
 				<div class="copy_right">
 					<div class="bottom-logo" style="display: none">
 						<img src="<c:url value='images/footer.png'/>" border="0" />
 					</div>
 				</div>
-			</div>
+			</div> --%>
 		</form>
 	</div>
 	<!-- body end -->

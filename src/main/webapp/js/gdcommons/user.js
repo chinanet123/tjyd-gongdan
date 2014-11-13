@@ -1,247 +1,445 @@
-function initEcloudS3Page() {
-	$("#main-jqgrid").jqGrid({
-		url:contextPath + "/s3_json.do",
-		datatype: 'json',
-		mtype:'GET',
-		jsonReader:{
-		root : "data", 
-		page : "page",
-		total: "totalPages",
-		records: "recordCount",
-		repeatitems: false,
-		id: "0"
-	  },
-	    colNames:['ID','名称', 'accessKey','secretKey'],  
-	    colModel :[                        
-	      {name:'id', index:'id',align:'center', width:55}, 
-	      {name:'name', index:'name', align:'center', width:90}, 
-	      {name:'accessKey',index:'accessKey', width:150, align:'center'}, 
-	      {name:'secretKey',index:'secretKey', width:80, align:'center'}
-	      ],
-	    pager: '#pager',
-	    rowNum:10,
-	    rowList:[10,20,30],
-	    sortname: 'id',
-	    sortorder: 'desc',
-	    viewrecords: false,
-	    gridview: true,
-	    autowidth:true,
-	    //width: 800,
-	    height: 250
-  });
-	
-	
-	//添加：
-	  $( "#btnAdd" ).button().click(function() {
-			clearForm();
-			$( "#form_operation" ).val("add");
-			$( "#dialog-form" ).dialog({title:"添加S3"});
-			$( "#dialog-form" ).dialog( "open" );
-		});
-	  
-	 //修改：
-	  $( "#btnModify" ).button().click(function() {
-			clearForm();			
-			var id = jQuery("#main-jqgrid").jqGrid('getGridParam','selrow');
-			if (id)	{
-				var ret = jQuery("#main-jqgrid").jqGrid('getRowData',id);
-				$("#s3_id").val(ret.id);
-				$("#s3_name").val(ret.name);
-				$("#s3_accesskey").val(ret.accessKey);
-				$("#s3_secretkey").val(ret.secretKey);	
-			} else { 
-				alert("请选择一行。");
-				return;
+var page_size = 10;
+function initUserList(){
+	$("#data_user").html("<tr><td><img src='images/icon/loading2.gif'/></td></tr>");
+	var page_no = $("#pageNum").text()
+	var filter_name = $("#search_filter_name").val();
+	var role_type = $("#search_role_type").val();
+	$.ajax({
+		type : "POST",
+		url : contextPath + "/user_list.do",
+		data : {pageNum:page_no,pageSize:page_size,filterName:filter_name,roleType:role_type},
+		success : function(page) {
+//			var str = "";
+			$("#data_user").empty();
+			var table = document.getElementById("data_user");
+			if(page != null && page.list.length > 0){
+				for(var i=0;i<page.list.length;i++){
+					var roleType = "";
+					var role_type = page.list[i].role_type;
+					if(page.list[i].role_type =="cfm"){
+	                	roleType = "资源管理员";
+	                }else if(page.list[i].role_type == "user"){
+	                	roleType = "业务管理员";
+					}else if(page.list[i].role_type == "sys"){
+						roleType = "系统管理员";
+					}
+					
+					var tr = document.createElement("tr"); 
+					var td1 = document.createElement("td");
+					var td2 = document.createElement("td");
+					var td3 = document.createElement("td");
+					var td4 = document.createElement("td");
+					var span1 = document.createElement("span");
+					var span2 = document.createElement("span");
+					
+					td1.setAttribute("style", "width:20%;");
+					td2.setAttribute("style", "width:20%;");
+					td3.setAttribute("style", "width:30%;");
+					td4.setAttribute("style", "width:30%;");
+					td4.className = "opera";
+					span1.setAttribute("onclick", "modifyUser('" + page.list[i].id + "')");
+					span2.setAttribute("onclick", "deleteUser('" + page.list[i].id + "')");
+					
+					td1.appendChild(document.createTextNode(page.list[i].user_name));
+					td2.appendChild(document.createTextNode(roleType));
+					td3.appendChild(document.createTextNode(page.list[i].login_name));
+					
+					span1.appendChild(document.createTextNode(" [编辑] "));
+					span2.appendChild(document.createTextNode(" [删除] "));
+					
+					if(role_type != 'sys'){
+						td4.appendChild(span1);
+						td4.appendChild(span2);
+					}else{
+						td4.appendChild(document.createTextNode(""));
+					}
+					
+					tr.appendChild(td1);
+					tr.appendChild(td2);
+					tr.appendChild(td3);
+					tr.appendChild(td4);
+					table.appendChild(tr);
+					/*
+					str += "<tr><td width='20%'>"+page.list[i].user_name+"</td>" +
+							"<td width='20%'>"+roleType+"</td>" +
+							"<td width='30%'>"+page.list[i].login_name+"</td>" +
+							"<td width='30%' class='opera'>";
+							if(role_type != 'sys'){
+								str += "[<span onclick='modifyUser("+page.list[i].id+")'>编辑</span>] [<span onclick='deleteUser("+page.list[i].id+")'>删除</span>]";
+							}
+							"</td></tr>";
+					*/
+				}
+			}else{
+				var tr = document.createElement("tr"); 
+				var td = document.createElement("td");
+				td.setAttribute("colspan", "4");
+				td.setAttribute("style", "text-align:center;color:red;");
+				td.appendChild(document.createTextNode(" 没有用户 "));
+				tr.appendChild(td);
+				table.appendChild(tr);
+//				str += "<tr><td clospan='4'>没有用户</td></tr>"
 			}
+//			$("#data_user").html(str);
 			
-			$( "#form_operation" ).val("modify");
-			$( "#dialog-form" ).dialog({title:"修改S3"});
-			$( "#dialog-form" ).dialog( "open" );
-			$("#main-jqgrid").jqGrid().trigger("reloadGrid");
-		});
-	
-	
-	//对话框：
-	  $( "#dialog-form" ).dialog({
-			autoOpen: false,
-			height: 300,
-			width: 400,
-			modal: true,
-			buttons: {
-				"保存": function() {
-					if($( "#form_operation" ).val() == "add") {
-						createEcloudS3();
-					} else {
-						modifyEcloudS3();
+			$("#totalNumber").text(page.totalNumber);
+			$("#totalPage").text(page.totalPage);
+		},
+		error : function(XMLHttpRequest, textStatus, errorThrown) {
+			if (XMLHttpRequest.status == 403 && errorThrown == "Forbidden") {
+				window.location.reload();
+			} else {
+				console.log(textStatus.error + "" + errorThrown);
+			}
+		},
+		dataType : "json"
+	});
+}
+
+function createrUser(){
+	$("#createUserDialog #user_name").val('');
+	$("#createUserDialog #login_name").val('');
+	$("#createUserDialog #role_type").val('');
+	$("#createUserDialog #password").val('');
+	$("#createUserDialog #cfm_password").val('');
+	$("#createUserDialog #span_error").text("");
+	var diag = new Dialog();
+	diag.Width = 460;
+	diag.Height = 250;
+	diag.Title = "创建用户";
+	diag.InvokeElementId="createUserDialog";
+	diag.OKEvent = function(){
+		var username = $("#createUserDialog #user_name").val();
+		var loginname = $("#createUserDialog #login_name").val();
+		var roletype = $("#createUserDialog #role_type").val();
+		var password = $("#createUserDialog #password").val();
+		var cfmpassword = $("#createUserDialog #cfm_password").val();
+		if(valid()){
+			$.ajax({
+				type : "POST",
+				url : contextPath + "/user_check_login_name.do",
+				data : {loginName:loginname},
+				success : function(result) {
+					if(result == 0){
+						$.ajax({
+							type : "POST",
+							url : contextPath + "/user_add.do",
+							data : {userName:username,loginName:loginname,password:password,roleType:roletype},
+							success : function(result) {
+								if(result == "1"){
+									diag.close();
+									initUserList();
+								}
+							},
+							error : function(XMLHttpRequest, textStatus, errorThrown) {
+								if (XMLHttpRequest.status == 403 && errorThrown == "Forbidden") {
+									window.location.reload();
+								} else {
+									console.log(textStatus.error + "" + errorThrown);
+								}
+							},
+							dataType : "json"
+						});
+					}else{
+						Dialog.alert("提示：用户名已存在！");
+						return ;
 					}
 				},
-				"取消": function() {
-					$( this ).dialog( "close" );
-				}
-			},
-		});
-	  
-	  //提交添加：
-		 function createEcloudS3() {
-			if( validateForm() ) {
-				 submitAddForm();
-			   }
-			}
-		   
-		function submitAddForm() {
-			var name = $.trim($("#s3_name").val());
-			var accessKey = $.trim($("#s3_accesskey").val());
-			var secretKey = $.trim($("#s3_secretkey").val());
-			alert(name);
-				
-			$.ajax({
-				type: "POST",
-				url:contextPath + "/s3_ajax_add.do",
-				data: {name:name,accessKey:accessKey,secretKey:secretKey},
-				success: function(ajaxResponse) {
-					$("#main-jqgrid").jqGrid().addRowData(ajaxResponse.result.id,ajaxResponse.result,'first');
-					$("#main-jqgrid").jqGrid().setSelection(ajaxResponse.result.id);
-					$("#dialog-form").dialog( "close" );
-						
-					},
-					error : function(XMLHttpRequest, textStatus, errorThrown) {
-						alert(textStatus.error);
-						alert(errorThrown);
-					},
-					dataType : "json"
-				});			
-			}
-
-		 //提交修改：
-		  function modifyEcloudS3() {
-				if( validateForm() ) {
-					submitModifyForm();
-				}
-			}
-		 
-			function submitModifyForm() {
-				var id =  $("#s3_id").val();
-				var name =  $.trim($("#s3_name").val());
-				var accessKey = $.trim($("#s3_accesskey").val());
-				var secretKey = $.trim($("#s3_secretkey").val());			
-				$.ajax({
-					type: "POST",
-					url:contextPath + "/s3_ajax_modify.do",
-					data: {id:id,name:name,accessKey:accessKey,secretKey:secretKey},
-					success: function(ajaxResponse) {
-						//alert(ajaxResponse.result.id);
-						$("#main-jqgrid").jqGrid().trigger("reloadGrid");
-						$( "#dialog-form" ).dialog( "close" );
-						
-					},
-					error : function(XMLHttpRequest, textStatus, errorThrown) {
-						alert(textStatus.error);
-						alert(errorThrown);
-					},
-					dataType : "json"
-				});			
-			}
-	  
-	  
-	  $( "#btnRefresh" ).button().click(function() {
-			$("#main-jqgrid").jqGrid().trigger("reloadGrid");
-		});
-		
-		$( "#btnDelete" ).click(function() {
-			deleteRow();
-		});
-		
-	  
-	 function clearForm() {
-			$("#dialog-form input[type='text']").each(function(index,node) {
-				$(this).val("");
-			});		
-			$('#errorMessages').empty();
-		}
-	 
-	 function deleteRow() {
-			var id = jQuery("#main-jqgrid").jqGrid('getGridParam','selrow');			
-			if (id)	{
-				var ret = jQuery("#main-jqgrid").jqGrid('getRowData',id);
-				var sid = ret.id;
-				if( confirm("您确定要删除此S3吗？") ) {
-					ajaxDeleteEcloudS3(sid);
-				}
-			} else { 
-				alert("请选择一行。");
-				return;
-			}
-		}
-	 
-		function ajaxDeleteEcloudS3(id) {
-			
-			$.ajax({
-				type: "POST",
-				url: contextPath  + "/s3_ajax_delete.do",
-				data: {sid:id},
-				success: function(ajaxResponse) {
-					//alert(ajaxResponse.result.id);
-					$("#main-jqgrid").jqGrid().trigger("reloadGrid");
-				},
 				error : function(XMLHttpRequest, textStatus, errorThrown) {
-					alert(textStatus.error);
-					alert(errorThrown);
+					if (XMLHttpRequest.status == 403 && errorThrown == "Forbidden") {
+						window.location.reload();
+					} else {
+						console.log(textStatus.error + "" + errorThrown);
+					}
 				},
 				dataType : "json"
 			});
 		}
-		
-		function validateForm() {
-			
-	        var errorList = $('#errorMessages');
-	        
-			errorList.empty();
-			
-			var bValid = true;
-			
-			$("#dialog-form input[type='text']").each(function(index,node) {
-				bValid = bValid && node.checkValidity();
-				if(!bValid) {
-					//Find the field's corresponding label
-	                var label = $('label[for=' + node.id + ']');
-	                //alert(label.id + label.html());
-	                //Opera incorrectly does not fill the validationMessage property.
-	                var message = node.validationMessage || 'Invalid value.';
-	                
-	                errorList.show().append('<li><span>' + label.html() + '</span> ' + message + '</li>');
-	                //alert( '<li><span>' + label.html() + '</span> ' + message + '</li>' );
-				}
-			});		
-			
-			$("#dialog-form input[type='number']").each(function(index,node) {
-				bValid = bValid && node.checkValidity();
-				if(!bValid) {
-					//Find the field's corresponding label
-	                var label = $('label[for=' + node.id + ']');
-	                //alert(label.id + label.html());
-	                //Opera incorrectly does not fill the validationMessage property.
-	                var message = node.validationMessage || 'Invalid value.';
-	                
-	                errorList.show().append('<li><span>' + label.html() + '</span> ' + message + '</li>');
-	                //alert( '<li><span>' + label.html() + '</span> ' + message + '</li>' );
-				}
-			});	
-			$("#dialog-form input[type='email']").each(function(index,node) {
-				bValid = bValid && node.checkValidity();
-				if(!bValid) {
-					//Find the field's corresponding label
-	                var label = $('label[for=' + node.id + ']');
-	                //alert(label.id + label.html());
-	                //Opera incorrectly does not fill the validationMessage property.
-	                var message = node.validationMessage || 'Invalid value.';
-	                
-	                errorList.show().append('<li><span>' + label.html() + '</span> ' + message + '</li>');
-				}
-			});	
-			return bValid;
-		}
-	
+	};//点击确定后调用的方法
+	diag.show();
+}
 
+function modifyUser(id){
+	$("#modifyUserDialog #user_name").val('');
+	$("#modifyUserDialog #role_type").val('');
+	$("#modifyUserDialog #password").val('');
+	$("#modifyUserDialog #cfm_password").val('');
+	$("#modifyUserDialog #span_error").text("");
+	if(id!=""){
+		$.ajax({
+			type : "POST",
+			url : contextPath + "/user_beforeUpdate.do",
+			data : {id:id},
+			success : function(user) {
+				if(user != null){
+					$("#modifyUserDialog #user_name").val(user.user_name);
+					$("#modifyUserDialog #login_name").text(user.login_name);
+					$("#modifyUserDialog #role_type").get(0).value = user.role_type;
+					$("#modifyUserDialog #old_password").text(user.password);
+					$("#isModPassword").attr("checked",false);
+					$(".isModPassword").hide();
+					var diag = new Dialog();
+					diag.Width = 360;
+					diag.Height = 250;
+					diag.Title = "修改用户";
+					diag.InvokeElementId = "modifyUserDialog";
+					diag.OKEvent = function(){
+						var username = $("#modifyUserDialog #user_name").val();
+						var roletype = $("#modifyUserDialog #role_type").val();
+						var password = $("#modifyUserDialog #old_password").text();
+						var password2 = $("#modifyUserDialog #password").val();
+						if($("#modifyUserDialog #isModPassword").attr('checked')==undefined){
+							if(valid2(0)){
+								$.ajax({
+									type : "POST",
+									url : contextPath + "/user_update.do",
+									data : {id:id,userName:username,password:password,roleType:roletype},
+									success : function(result) {
+										if(result == "1"){
+											diag.close();
+											initUserList();
+										}
+									},
+									error : function(XMLHttpRequest, textStatus, errorThrown) {
+										if (XMLHttpRequest.status == 403 && errorThrown == "Forbidden") {
+											window.location.reload();
+										} else {
+											console.log(textStatus.error + "" + errorThrown);
+										}
+									},
+									dataType : "json"
+								});
+							}
+						}else{
+							if(valid2(1)){
+								$.ajax({
+									type : "POST",
+									url : contextPath + "/user_update.do",
+									data : {id:id,userName:username,password:password2,roleType:roletype},
+									success : function(result) {
+										if(result == "1"){
+											diag.close();
+											initUserList();
+										}
+									},
+									error : function(XMLHttpRequest, textStatus, errorThrown) {
+										if (XMLHttpRequest.status == 403 && errorThrown == "Forbidden") {
+											window.location.reload();
+										} else {
+											console.log(textStatus.error + "" + errorThrown);
+										}
+									},
+									dataType : "json"
+								});
+							}
+						}
+					};//点击确定后调用的方法
+					diag.show();
+				}
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				if (XMLHttpRequest.status == 403 && errorThrown == "Forbidden") {
+					window.location.reload();
+				} else {
+					console.log(textStatus.error + "" + errorThrown);
+				}
+			},
+			dataType : "json"
+		});
+	}
+	
 }
 
 
+function changeCheckBox(){
+	if($("#modifyUserDialog #isModPassword").attr('checked')==undefined){
+		$(".isModPassword").hide();
+	}else{
+		$(".isModPassword").show();
+	}
+}
+
+function valid(){
+	var username = $("#createUserDialog #user_name").val();
+	var loginname = $("#createUserDialog #login_name").val();
+	var roletype = $("#createUserDialog #role_type").val();
+	var password = $("#createUserDialog #password").val();
+	var cfmpassword = $("#createUserDialog #cfm_password").val();
+	if(username == ""){
+		$("#createUserDialog #span_error").text("真实姓名不能为空 !");
+		return false;
+	}else if(china(username)){
+		$("#createUserDialog #span_error").text("真实姓名只能输入中文 !");
+		return false;
+	}
+	if(loginname == ""){
+		$("#createUserDialog #span_error").text("用户名不能为空 !");
+		return false;
+	}else if(checkValue(loginname)){
+		$("#createUserDialog #span_error").text("用户名只能包含字母、数字、下划线、中划线 !");
+		return false;
+	}else{
+		$("#createUserDialog #span_error").text("");
+	}
+	if(password == ""){
+		$("#createUserDialog #span_error").text("密码不能为空 !");
+		return false;
+	}else if(password.length < 6 || password.length > 14){
+		$("#createUserDialog #span_error").text("密码不能小于6位 不能大于14位!");
+		return false;
+	}else if(checkValue(password)){
+		$("#createUserDialog #span_error").text("密码只能包含字母、数字、下划线、中划线!");
+		return false;
+	}
+	if(cfmpassword == ""){
+		$("#createUserDialog #span_error").text("确认密码不能为空 !");
+		return false;
+	}else if(cfmpassword.length < 6 || cfmpassword.length > 14){
+		$("#createUserDialog #span_error").text("确认密码不能小于6位 不能大于14位!");
+		return false;
+	}
+	if(password != cfmpassword){
+		$("#createUserDialog #span_error").text("两次输入的密码不一致 !");
+		$("#createUserDialog #password").val('');
+		$("#createUserDialog #cfm_password").val('');
+		return false;
+	}
+	return true;
+}
+function valid2(ret){
+	var username = $("#modifyUserDialog #user_name").val();
+	var roletype = $("#modifyUserDialog #role_type").val();
+	var password = $("#modifyUserDialog #password").val();
+	var cfmpassword = $("#modifyUserDialog #cfm_password").val();
+	
+	if(username == ""){
+		$("#modifyUserDialog #span_error").text("真实姓名不能为空 !");
+		return false;
+	}else if(china(username)){
+		$("#modifyUserDialog #span_error").text("真实姓名只能输入中文 !");
+		return false;
+	}
+	if(ret != 0){
+		if(password == ""){
+			$("#modifyUserDialog #span_error").text("密码不能为空 !");
+			return false;
+		}else if(password.length < 6 || password.length > 14){
+			$("#modifyUserDialog #span_error").text("密码不能小于6位 不能大于14位!");
+			return false;
+		}else if(checkValue(password)){
+			$("#modifyUserDialog #span_error").text("密码只能包含字母、数字、下划线、中划线!");
+			return false;
+		}
+		if(cfmpassword == ""){
+			$("#modifyUserDialog #span_error").text("确认密码不能为空 !");
+			return false;
+		}else if(cfmpassword.length < 6 || cfmpassword.length > 14){
+			$("#modifyUserDialog #span_error").text("确认密码不能小于6位 不能大于14位!");
+			return false;
+		}
+		if(password != cfmpassword){
+			$("#modifyUserDialog #span_error").text("两次输入的密码不一致 !");
+			$("#modifyUserDialog #password").val('');
+			$("#modifyUserDialog #cfm_password").val('');
+			return false;
+		}
+	}
+	return true;
+}
+
+function deleteUser(id){
+	if(id!=""){
+		$.ajax({
+			type : "POST",
+			url : contextPath + "/user_beforeUpdate.do",
+			data : {id:id},
+			success : function(user) {
+				if(user!="" && user!=null){
+					var roleType = "";
+					if(user.role_type =="cfm"){
+						roleType = "资源管理员";
+					}else if(user.role_type == "user"){
+						roleType = "业务管理员";
+					}else if(user.role_type == "sys"){
+						roleType = "系统管理员";
+					}
+					Dialog.confirm('您确认要删除'+roleType+'【'+user.user_name+'】吗？',function(){
+						$.ajax({
+							type : "POST",
+							url : contextPath + "/user_delete.do",
+							data : {id:id},
+							success : function(result) {
+								if(result == "1"){
+									initUserList();
+								}
+							},
+							error : function(XMLHttpRequest, textStatus, errorThrown) {
+								if (XMLHttpRequest.status == 403 && errorThrown == "Forbidden") {
+									window.location.reload();
+								} else {
+									console.log(textStatus.error + "" + errorThrown);
+								}
+							},
+							dataType : "json"
+						});
+					});
+				}
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				if (XMLHttpRequest.status == 403 && errorThrown == "Forbidden") {
+					window.location.reload();
+				} else {
+					console.log(textStatus.error + "" + errorThrown);
+				}
+			},
+			dataType : "json"
+		});
+	}
+}
+
+//只能输入字母、数字、下划线、中划线
+function checkValue(value){
+	var reg = /^[A-Za-z0-9_-]+$/; 
+	if (!reg.test(value)){
+		return true;
+	}
+	return false;
+}
+//判读只能输入中文
+function china(value){
+	var reg = /^[\u4e00-\u9C52]+$/; //\u4e00-\u9fa5 中文。
+	if (!reg.test(value)){
+		return true;
+	}
+	return false;
+}
+
+
+//上一页
+function PrevPage(){
+	var pageNum = $("#pageNum").text();
+	if(pageNum!=1){
+		$("#pageNum").text(parseInt(pageNum)-1);
+		initUserList();
+	}
+}
+//下一页
+function NextPage(){
+	var pageNum = $("#pageNum").text();
+	var totalPage = $("#totalPage").text();
+	if(pageNum!=totalPage){
+		$("#pageNum").text(parseInt(pageNum)+1);
+		initUserList();
+	}
+}
+//首页
+function FirstPage(){
+	$("#pageNum").text(1);
+	initUserList();
+}
+//末页
+function LastPage(){
+	var totalPage = $("#totalPage").text();
+	$("#pageNum").text(totalPage);
+	initUserList();
+}

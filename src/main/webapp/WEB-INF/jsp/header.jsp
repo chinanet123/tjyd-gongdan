@@ -1,305 +1,215 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page language="java" pageEncoding="UTF-8"%>
-
-<%@ page 
-import="java.util.*"
-import="java.text.SimpleDateFormat"
-import="org.springframework.context.*"
-import="org.springframework.context.support.*"
-import="com.chinaops.cloud.framework.PrivilegeManager"
-import="com.chinaops.cloud.framework.AnnouncementManager"
-import="org.springframework.security.core.context.SecurityContextHolder"
-import="com.chinaops.cloud.auth.shared.*"
-import="com.chinaops.cloud.common.entity.RoleEnum"
-import="com.chinaops.web.common.entity.EcloudUserDetails"
-import="com.chinaops.ecloud.s3.openservices.model.Bucket"
-import="com.chinaops.ecloud.s3.openservices.EcloudS3"
-import="com.chinaops.ecloud.s3.openservices.EcloudS3Client"
-import="com.chinaops.cloud.metadata.shared.Announcement"
-import="com.chinaops.cloud.metadata.shared.UserAnnouncement"
+<%@page 
+	import="com.chinaops.web.common.entity.SysAdminUserDetails"
+	import="org.springframework.security.core.context.SecurityContextHolder"
 %>
-<style type="text/css">
-.main-header-chinaunicom {
-    background: url(<c:url value='/images/main-header.png'/>) repeat-x scroll 0 0 transparent;
-    height: 58px;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-}
-.section_links {
-    color: #000;
-    display: inline;
-    float: right;
-    font-size: 13px;
-    padding-top: 6px;
-    padding-right: 20px;
-}
-.section_links p{
-	text-align: right; 
-	margin:0; 
-	padding:4px 15px 6px 0;
-	_padding:0 10px 8px 0;
-	height:0px;
-}
-.section_links a:link ,.section_links a:visited,.section_links a:hover,.section_links a:active{ 
+<%@ page language="java" pageEncoding="UTF-8"%>
+<style>
+.showPassword {
+	background:#FFF;
 	color:#000;
-	color:#000;
-	text-decoration: underline;
-	font-weight:normal;
+	border:1px solid #DDD;
+	border-bottom:0px;
+	border-radius:5px 5px 0px 0px;
+	margin:-1px -1px 0px -1px;
 }
-.section_links ul { list-style-type: none; padding:2px;border:1px solid blue; }
-.section_links ul li { list-style-type: none; line-height: 22px; }
-.section_links ul li:hover { border:1px solid #BBB; }
-.section_links ul li  a:link, .section_links ul li  a:visited, .section_links ul li  a:hover, .section_links ul li  a:active { color:#000; text-decoration: none; }
-.section_links ul li a:hover { text-decoration: underline; }
-.welcome-02-chinaunicom {
-   /*  background: url("<c:url value='/images/welcome_bg4.png'/>") no-repeat scroll 0 0 transparent; */
-    float: right;
-    margin:0px 2px;
-    /* height: 30px;
-    padding-left: 12px;
-    padding-top: 5px;
-    width: 72px;
-    color:#000000; */
+.user_name {
+	padding:0px 5px;
+	cursor: pointer;
+	position: relative;
+	color:#FFFF99;
+	z-index: 2;
 }
-.exit-link {
+.layoutPassword {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #DDD;
+    border-radius: 0 5px 5px 5px;
     color: #000000;
-    text-decoration: none;
-}
-.welcome-01-chinaunicom {
-   /* background: url("<c:url value='/images/welcome_bg.png'/>") repeat-x scroll 0 0 transparent;*/
-    /* color: #000000; */
-    float: right;
-    margin:0px 2px;
-/*     font-size: 14px;
-    font-weight: bold;
     height: 30px;
-    line-height: 30px;
-    padding-left: 5px;
-    padding-right: 30px;
-    text-align: right; */
+    left: 976px;
+    position: absolute;
+    top: 109px;
+    width: 100px;
+    z-index: 1;
 }
-.welcome-top-chinaunicom {
-    /* background: url("<c:url value='/images/welcome_bg3.png'/>") no-repeat scroll 0 0 transparent; */
-    float: right;
-    margin:0px 2px;
-/*     height: 30px;
-    width: 11px; */
+.layoutPassword:hover {
+	color:blue;
 }
-img { border:0px; }
-
- 
-.welcome-01-throud {
-	background: url("<c:url value='/images/tuichu.png'/>") no-repeat right;
-    float: right;
-    height: 16px;
-    width: 16px;
-    line-height: 30px;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 11px;
-    cursor: pointer;
+ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
 }
-.welcome-01-throud:hover {
-	background: url("<c:url value='/images/tuichu2.png'/>") no-repeat right;
-    float: right;
-    height: 16px;
-    width: 16px;
-    line-height: 30px;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 11px;
+ul li {
+	list-style: none outside none;
+    padding: 0 20px;
+	line-height: 30px;
+	text-align: center;
+	cursor: pointer;
 }
-.welcome-01-third {
-	background: url("<c:url value='/images/help-icon.png'/>") no-repeat right;
-    float: right;
-    height: 16px;
-    width: 16px;
-    line-height: 30px;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 11px;
-    cursor: pointer;
+.modifyPasswordDialog {
+	padding:10px;
 }
-.welcome-01-third:hover {
-	background: url("<c:url value='/images/help-icon2.png'/>") no-repeat right;
-    float: right;
-    height: 16px;
-    width: 16px;
-    line-height: 30px;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 11px;
+.modifyPasswordDialog table {
+	width:100%;
+	border:0px solid #000;
 }
-.welcome-01-line {
-	float: right;
-	width: 2px;
-	height:16px;
-	background:url("<c:url value='/images/divider.jpg'/>") no-repeat;
-	margin: 6px 5px 0;
+.modifyPasswordDialog table th {
+	padding:2px;
+	text-align: right;
+	font-weight: normal;
 }
-.welcome-top-second2 {
-    float: right;
-    padding-right:5px;
-    height: 30px;
-    line-height:32px   
+.modifyPasswordDialog table td {
+	padding:2px;
 }
-.welcome-top-second {
-    background: url("<c:url value='/images/manager-icon.png'/>") no-repeat right;
-    float: right;
-    padding-right:30px;
-    height: 30px;
-    line-height:32px   
+.modifyPasswordDialog .msg-error {
+	color:#666;
 }
-.welcome-top-second:hover {
-    background: url("<c:url value='/images/manager-icon2.png'/>") no-repeat right;
-    float: right;
-    padding-right:30px;
-    height: 30px;
-    line-height:32px
-}
-.welcome-top-first {
-	float: right;
-    height: 30px;
-/*     margin-right:20px; */
-    line-height:32px;
-    width:90px;
-    cursor: pointer;
-    /* background:url("<c:url value='/images/announcementNew.gif'/>") no-repeat scroll 90px center rgba(0, 0, 0, 0); */
-}
-.welcome img {
-	float: right;
-	margin-right: 5px;
-    line-height:32px;
-}
-.welcome{
-	margin: 15px 0 0;
-	height:30px;
-	overflow: hidden;
-	width:400px;
+.up {
+	color:#2F6DB3;
 }
 </style>
-<script type="text/javascript">
-	function redirectLayout(){
-		window.location.href = "<c:url value='/j_spring_security_logout'/>";
+<%
+	Object principal1 = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	SysAdminUserDetails user = (SysAdminUserDetails)principal1;
+	String roleName = "";
+	if(user != null){
+		if(user.getRole().equals("cfm")){
+			roleName = "资源管理员";
+		}else if(user.getRole().equals("user")){
+			roleName = "业务管理员";
+		}else if(user.getRole().equals("sys")){
+			roleName = "系统管理员";
+		}
 	}
-	function redirectHelp(){
-		window.open("<%=request.getContextPath()%>/images/jsp/faq.jsp","_blank");
-	}
-</script>
-<div id="main-header" class="main-header-chinaunicom">
-	<div class="header-table">
-		<div class="header-logo">
-			<img src="<c:url value='/images/header-logo.png'/>">
-		</div>
+%>
+<script type="text/javascript" charset="utf-8"> 
+	jQuery(document).ready(function() {
+		$("#header_user_name").click(function(){
+			if($(".layoutPassword").css("display") == "block"){
+				$(this).removeClass("showPassword");
+				$(this).children("img").attr("src","<c:url value='/images/header_down.png'/>");
+				$(this).removeClass("up");
+			}else{
+				$(this).addClass("showPassword");
+				$(this).children("img").attr("src","<c:url value='/images/header_up.png'/>");
+				$(this).addClass("up");
+			}
+			$(".layoutPassword").css({
+				left:$(this).position().left-1+"px",
+				top: $(this).position().top+39
+			});
+			$(".layoutPassword").toggle();
+		});
 		
-		<div class="section_links">
-			<%-- <p>
-				<a href="<c:url value='/images/jsp/faq.jsp'/>" target="_blank"> <!-- 服务支持与帮助 --> </a>
-			</p> --%>
-			<div class="welcome">
-				<div class="welcome-01-throud" onclick="redirectLayout()"> </div>
-				<div class="welcome-01-third" onclick="redirectHelp()">　</div>
-				<div class="welcome-01-line">　</div>
-				<%
-				Object principal1 = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-				ApplicationContext context2 = new ClassPathXmlApplicationContext("spring-dao.xml");
-				AnnouncementManager announcementManager = (AnnouncementManager) context2.getBean("announcementManager");
-				String username = "";
-				if(null!=principal1){
-					username = ((EcloudUserDetails)principal1).getUsername();
+		$("#modifyPassword").click(function(){
+			$("#header_user_name").removeClass("up");
+			$(".layoutPassword").css('display','none'); 
+			$("#header_user_name").children("img").attr("src","<c:url value='/images/header_down.png'/>");
+			$("#header_user_name").removeClass("showPassword");
+			
+			$("#userName").text("<%=user.getUsername() %>");
+			$("#loginName").text("<%=user.getLoginName() %>");
+			var diag = new Dialog();
+			diag.Width = 560;
+			diag.Height = 200;
+			diag.Title = "修改密码";
+			diag.InvokeElementId="modifyPasswordDialog";
+			diag.OKEvent = function(){
+				var id = $("#mod_id").val();
+				var old_pass = $("#mod_pass").val();
+				var mod_old_password = $("#mod_old_password").val();
+				var mod_new_password = $("#mod_new_password").val();
+				var mod_cfm_new_password = $("#mod_cfm_new_password").val();
+				if(mod_old_password == ""){
+					Dialog.alert("旧密码不能为空！");
+					return ;
 				}
-				Map<Integer,UserAnnouncement> uacsMap = new HashMap<Integer,UserAnnouncement>();
-				List<UserAnnouncement> uacs2 = announcementManager.searchByUserId(((EcloudUserDetails)principal1).getId());
-				if(uacs2 != null && uacs2.size()>0){
-		        	for(UserAnnouncement uac:uacs2){
-		        		uacsMap.put(uac.getId(),uac);
-		        	}
+				if(mod_new_password == ""){
+					Dialog.alert("新密码不能为空！");
+					return ;
 				}
-				
-				
-				List<Announcement> allAnnouncements = announcementManager.getAllAnnouncements();
-				if(allAnnouncements !=null && allAnnouncements.size() > 0){
-					for(Announcement ant : allAnnouncements){
-						Date sd=new Date();
-						String st="2013-12-19 14:12:56";
-						String et="2013-12-20 14:12:56";
-						SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-						Date std = null;
-						Date etd = null;
-						try {
-							std=(Date)sdf.parse(ant.getStartTime());
-							etd = (Date)sdf.parse(ant.getEndTime());
-						} catch (Exception e) {
-							e.printStackTrace();
+				if(mod_cfm_new_password == ""){
+					Dialog.alert("确认密码不能为空！");
+					return ;
+				}
+				if(old_pass != mod_old_password){
+					Dialog.alert("旧密码错误！")
+					$("#mod_old_password").val('');
+					return ;
+				}
+				if(mod_new_password.length < 6 || mod_new_password.length > 14){
+					Dialog.alert("密码在6-14位之间！");
+					$("#mod_new_password").val('');
+					$("#mod_cfm_new_password").val('');
+					return ;
+				}
+				if(mod_new_password != mod_cfm_new_password){
+					Dialog.alert("新密码与确认密码不一致！");
+					$("#mod_new_password").val('');
+					$("#mod_cfm_new_password").val('');
+					return ;
+				}
+				$.ajax({
+					type : "POST",
+					url : contextPath + "/updateUserPassword_update_ajax.do",
+					data : {id:id,password:mod_new_password},
+					success : function(result) {
+						if(result == "1"){
+							diag.close();
+							Dialog.confirm('警告：您确认要重新登录吗？',function(){
+								window.location.href = contextPath + "/login.htm";
+							});
 						}
-						boolean stdBeforesd=std.before(sd);
-						boolean sdBeforeetd=sd.before(etd);
-						if(uacsMap.get(ant.getId())!=null){
-							UserAnnouncement ua = (UserAnnouncement)uacsMap.get(ant.getId());
-							if(ua.getId() != ant.getId() && ua.getUserId() != ((EcloudUserDetails)principal1).getId() && stdBeforesd && sdBeforeetd){
-								announcementManager.createUserAnnouncement(((EcloudUserDetails)principal1).getId(),ant.getId(),0);
-							}
-						}else if(stdBeforesd && sdBeforeetd){
-							announcementManager.createUserAnnouncement(((EcloudUserDetails)principal1).getId(),ant.getId(),0);
+					},
+					error : function(XMLHttpRequest, textStatus, errorThrown) {
+						if (XMLHttpRequest.status == 403 && errorThrown == "Forbidden") {
+							window.location.reload();
+						} else {
+							console.log(textStatus.error + "" + errorThrown);
 						}
-					}
-				}
-				if(((EcloudUserDetails)principal1).getRole().equalsIgnoreCase(RoleEnum.CompanyAdministrator.toString())){
-					String pwdUrl=request.getContextPath()+"/updateUserPassword.htm";
-					String cardUrl=request.getContextPath()+"/dynamicCard.htm";
-					%>
-					<div id="welcome-top-second" class="welcome-top-second"> </div>
-					<div class="welcome-top-second2">
-					   <%= username %>
-					</div>
-					<ul id="menu-header-button" style="display: none;">
-						<li><a href="#" onclick="window.location.href='<%=pwdUrl%>'">修改密码</a></li>
-						<%-- <li><a href="#" onclick="window.location.href='<%=cardUrl%>'">密码卡管理</a></li> --%>
-					</ul>
-					<!-- <div class="welcome-01-line"></div> -->
-					<%	
-				}else{	
-				 %>
-				 
-				<div class="welcome-top-second2"><%= username %></div>
-				
-				<%} 
-				List<UserAnnouncement> uacs = announcementManager.searchByUserId(((EcloudUserDetails)principal1).getId());
-		        if(uacs != null && uacs.size()>0){
-		        	%>
-	        		<div class="welcome-01-line"></div>
-	        		<%	
-		        	for(UserAnnouncement uac:uacs){
-		        		if(uac.getState() != 0){
-		        		 
-		        			continue;
-		        		}else{
-		        			%>
-		        			<div class="imgAnnounce" style="display: ">
-		        			   <img  src="<c:url value='/images/announcementNew.gif'/>" style='height: 7px; width: 18px; '>
-		        			</div>
-		        			<%
-		        			break;
-		        		}
-		        	}
-		        }else{
-		        	
-		        }				 
-				%>
-				<div class="welcome-top-first" onclick="showAnnouncement()">
-				   [产品升级公告]
-				</div>
-				
-			</div>
-		</div>
-	</div>
-</div>
-<script type="text/javascript">
-    function showAnnouncement(){
-		$(".imgAnnounce").attr("style",'display:none');
-		window.open("<c:url value='/showAnnouncement.htm'/>","_blank");
-	}
+					},
+					dataType : "json"
+				});
+			};//点击确定后调用的方法
+			diag.show();
+		});
+	});
 </script>
 
+<div class="yd-gongdan-logo"> </div>
+<div class="banner-nav"> 
+	<div class="banner-left">
+	<%
+		if(user.getRole().equals("cfm") || user.getRole().equals("user")){
+	%>
+		<div id="ticket_header" class="ticket"><a href="<c:url value='/ticket.htm'/>">工单管理</a></div>
+		<div id="client_header" class="client selected"><a href="<c:url value='/client.htm'/>">客户管理</a></div>
+	<% 
+		}else{ 
+	%>
+		<div class="user selected"><a href="<c:url value='/user.htm'/>">角色管理</a></div>
+	<%
+		} 
+	%>
+	</div>
+	<div class="banner-right" style="">
+		<div>欢迎&nbsp;&nbsp;<%=roleName %> &nbsp;&nbsp; </div>
+		<div style="" id="header_user_name" class="user_name">
+			<%=user.getUsername() %><img src="<c:url value='/images/header_down.png'/>"/>
+		</div> &nbsp;&nbsp;
+		<ul class="layoutPassword" style="display: none;"><li id="modifyPassword">修改密码</li></ul>
+		<div class="banner-layout"><a href="<c:url value='/j_spring_security_logout'/>"><img style="padding-top:10px;" src="<c:url value='/images/layout.png'/>"/> 退出</a></div>
+	</div>
+</div>
+<div id="modifyPasswordDialog" class="modifyPasswordDialog" style="display: none;">
+	<input type="hidden" id="mod_id" value="<%=user.getId() %>"/>
+	<input type="hidden" id="mod_pass" value="<%=user.getPassword() %>"/>
+	<table>
+		<tr><th style="width:15%;">姓名：</th><td style="width:25%;"><span id="userName"></span></td><td style="width:60%;"></td></tr>
+		<tr><th>用户名：</th><td><span id="loginName"></span></td><td></td></tr>
+		<tr><th>旧密码：</th><td><input type="password" id="mod_old_password"/></td><td><span id="mod_old_password_span_error" class="msg-error">为了确保是您本人操作，需要再次核对帐号密码</span></td></tr>
+		<tr><th>新密码：</th><td><input type="password" id="mod_new_password"/></td><td><span id="mod_new_password_span_error" class="msg-error">密码长度6~14位，由字母、数字、中横向、下划线组成，区分大小写</span></td></tr>
+		<tr><th>确认密码：</th><td><input type="password" id="mod_cfm_new_password"/></td><td><span id="mod_cfm_new_password_span_error" class="msg-error">请再次输入新密码</span></td></tr>
+	</table>
+</div>
