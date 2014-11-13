@@ -5,20 +5,78 @@
  */
 package com.chinaops.web.ydgd.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.chinaops.web.common.entity.Page;
+import com.chinaops.web.ydgd.dao.Impl.UserDaoImpl;
+import com.chinaops.web.ydgd.entity.User;
+
 /**
  *
  * @author hiumin_angle
  */
 public class UserService {
-    // ========================== Attributes ============================
+    
+    @Autowired
+    private UserDaoImpl userDaoImpl;
+    
+    public UserDaoImpl getUserDaoImpl() {
+        return userDaoImpl;
+    }
 
-    // ========================= Constructors ===========================
+    public void setUserDaoImpl(UserDaoImpl userDaoImpl) {
+        this.userDaoImpl = userDaoImpl;
+    }
+    
+    public User getUserByLoginNameAndPassWord(String loginName,String password){
+        return this.userDaoImpl.getUserByLoginNameAndPassword(loginName, password);
+        
+    }
+    
+    public User getUserByLoginName(String loginName){
+        return this.userDaoImpl.getUserByLoginName(loginName);        
+    }
+    
+    public Page getAllUserInfor(int pageNo,int pageSize,String filterName,String roleType){
+        return userDaoImpl.getAllUserInfo(pageNo, pageSize, filterName,roleType);
+        
+    }
+    
+    public User getUserById(int id){
+         User user = this.userDaoImpl.getUserById(id);
+         if(user != null){
+             return user;
+         }
+         return null;
+    }
+    
+    public boolean addUser(User user){
+        this.userDaoImpl.addUser(user);
+        return true;
+    }
+    
+    public boolean updateUser(User user){
+        this.userDaoImpl.updateUser(user);
+        return true;
+    }
+    
+    public boolean deleteUser(int id){
+        this.userDaoImpl.deleteUser(id);
+        return true;
+        
+    }
+    
+    public boolean modifyUserPassword(User user){
+    	return userDaoImpl.modifyUserPassword(user);
+    }
 
-    // ======================= Getters & Setters ========================
-
-    // ======================== Public methods ==========================
-
-    // ==================== Private utility methods =====================
-
-    // ========================== main method ===========================
+	/**
+	 * @author 张立强
+	 * @email  liqiang.zhang@china-ops.com
+	 * @param loginname
+	 * @return
+	 */
+	public int checkUserLoginName(String loginname) {
+		return userDaoImpl.checkLoginName(loginname);
+	}
 }

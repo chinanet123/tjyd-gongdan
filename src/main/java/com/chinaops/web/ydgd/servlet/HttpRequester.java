@@ -119,6 +119,11 @@ public class HttpRequester {
 				param.append("&");
 				param.append(key).append("=").append(parameters.get(key));
 			}
+			
+//			urlConnection.setRequestProperty("ContentType","text/xml;charset=utf-8");
+//			urlConnection.setRequestProperty("charset", "UTF-8"); 
+//			urlConnection.setReadTimeout(10000);
+//			urlConnection.setConnectTimeout(10000); 
 			urlConnection.getOutputStream().write(param.toString().getBytes());
 			urlConnection.getOutputStream().flush();
 			urlConnection.getOutputStream().close();
@@ -198,4 +203,5 @@ public class HttpRequester {
 	public void setDefaultContentEncoding(String defaultContentEncoding) {
 		this.defaultContentEncoding = defaultContentEncoding;
 	}
+	
 }

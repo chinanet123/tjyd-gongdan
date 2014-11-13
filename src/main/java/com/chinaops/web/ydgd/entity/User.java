@@ -13,54 +13,72 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class User implements IsSerializable {
     
-	 // ========================== Attributes ============================
-	private int id;
-    private String username;
-    private String loginname;
+    private int id;
+    
+    private String user_name;
+    
+    private String login_name;
+     
     private String password;
-    private String roletype;
+
+    private String role_type;
     
- // ======================= Getters & Setters ========================
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	
-	public String getLoginname() {
-		return loginname;
-	}
-	public void setLoginname(String loginname) {
-		this.loginname = loginname;
-	}
-	
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-	public String getRoletype() {
-		return roletype;
-	}
-	public void setRoletype(String roletype) {
-		this.roletype = roletype;
-	}
+    private String create_time;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRole_type() {
+        return role_type;
+    }
+
+    public void setRole_type(String role_type) {
+        this.role_type = role_type;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
+    }
     
     
-   
+    // ========================== Attributes ============================
 
     // ========================= Constructors ===========================
 
+    // ======================= Getters & Setters ========================
 
     // ======================== Public methods ==========================
 

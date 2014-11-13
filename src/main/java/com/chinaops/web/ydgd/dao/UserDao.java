@@ -12,11 +12,13 @@ import com.chinaops.web.ydgd.entity.User;
  * @author hiumin_angle
  */
 public interface UserDao {
+    
+     User getUserByLoginNameAndPassword(String loginName,String password);
+    
+    User getUserByLoginName(String loginName);
+    
     // ========================== Attributes ============================
 
-	public User authLogin(User user);
-	
-	public boolean updateUser(User user);
     // ========================= Constructors ===========================
 
     // ======================= Getters & Setters ========================
